@@ -1,0 +1,29 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Build Rescue Squad",
+      "type": "shell",
+      "command": "g++",
+      "args": [
+        "-std=c++17",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Iinclude",
+        "-I\"C:/msys64/mingw64/include\"",
+        "src/*.cpp",
+        "-o",
+        "bin/rescue-squad.exe",
+        "-lsfml-graphics",
+        "-lsfml-window",
+        "-lsfml-system",
+        "-mwindows"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    }
+  ]
+}

@@ -24,12 +24,27 @@ void Game::initialize()
 {
     window_.setFramerateLimit(60);
     window_.setKeyRepeatEnabled(false);
+    font_.loadFromFile("C:/Windows/Fonts/arial.ttf");
+
+    successText_.setFont(font_);
+    successText_.setString("Lo lograste");
+    successText_.setCharacterSize(34);
+    successText_.setFillColor(sf::Color::White);
+    successText_.setStyle(sf::Text::Bold);
+    successText_.setPosition(170.0f, 230.0f);
+
+    scoreText_.setFont(font_);
+    scoreText_.setCharacterSize(24);
+    scoreText_.setFillColor(sf::Color::White);
+    scoreText_.setPosition(180.0f, 290.0f);
+
     map_.resetDefaultLayout();
     rescuer_.setPositionCell(1, 1);
     targetCell_ = sf::Vector2i(1, 1);
     activePath_.clear();
     movementPoints_ = 0;
     victimRescued_ = false;
+    missionComplete_ = false;
     map_.setTerrain(victimCell_.x, victimCell_.y, TerrainType::Clean);
     map_.setTerrain(evacuationCell_.x, evacuationCell_.y, TerrainType::Clean);
     computePathToTarget(sf::Vector2i(18, 18));
@@ -59,6 +74,11 @@ void Game::handleEvents()
             return;
         }
 
+        if (missionComplete_)
+        {
+            continue;
+        }
+
         if (event.type == sf::Event::MouseButtonPressed)
         {
             const auto mousePos = sf::Mouse::getPosition(window_);
@@ -85,6 +105,11 @@ void Game::handleEvents()
 
 void Game::update(float dt)
 {
+    if (missionComplete_)
+    {
+        return;
+    }
+
     rescuer_.update(dt);
 
     if (fireClock_.getElapsedTime().asSeconds() >= 3.0f)
@@ -115,8 +140,11 @@ void Game::update(float dt)
     if (rescuer_.carryingVictim && rescuer_.currentCell() == evacuationCell_)
     {
         victimRescued_ = true;
+        missionComplete_ = true;
         movementPoints_ += 50;
         rescuer_.carryingVictim = false;
+        scoreText_.setString("Puntos: " + std::to_string(movementPoints_));
+        scoreText_.setPosition(210.0f, 290.0f);
     }
 
     if (pathIsBlocked())
@@ -129,6 +157,15 @@ void Game::update(float dt)
 
 void Game::render()
 {
+    if (missionComplete_)
+    {
+        window_.clear(sf::Color(20, 80, 180));
+        window_.draw(successText_);
+        window_.draw(scoreText_);
+        window_.display();
+        return;
+    }
+
     window_.clear(sf::Color(30, 30, 30));
 
     for (int y = 0; y < Map::GRID_SIZE; ++y)

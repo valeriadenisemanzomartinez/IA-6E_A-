@@ -26,6 +26,9 @@ private:
     Map map_;
     Rescuer rescuer_;
     sf::RenderWindow window_;
+    sf::Font font_;
+    sf::Text successText_;
+    sf::Text scoreText_;
     sf::Clock fireClock_;
     sf::Clock updateClock_;
     std::vector<sf::Vector2i> activePath_;
@@ -33,6 +36,7 @@ private:
     sf::Vector2i victimCell_;
     sf::Vector2i evacuationCell_;
     bool victimRescued_ = false;
+    bool missionComplete_ = false;
     int movementPoints_ = 0;
     float cellSize_ = 32.0f;
     float lastDisplayedCost_ = 0.0f;
